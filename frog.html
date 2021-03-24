@@ -1,0 +1,157 @@
+<html>
+  <head>
+    <style>
+      /* html, body {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          padding: 0;
+          margin: 0;
+      } */
+
+      #joystick {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 175%;
+          width: 100%;
+          background: rgba(0, 255, 0, 0.1);
+      }
+      </style>
+
+
+    <title>frog</title>
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.0/dist/aframe-physics-system.min.js"></script>
+    <script src="https://unpkg.com/aframe-physics-extras@0.1.2/dist/aframe-physics-extras.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.9.0/nipplejs.min.js"></script>
+    <script>
+
+    const maxSteerVal = 0.02;
+    const maxForce = .05;
+      
+    AFRAME.registerComponent('car', {
+      
+      init: function () {
+        const scope = this;
+
+
+        const joystickL = nipplejs.create({
+                zone: document.getElementById('joystick'),
+                mode: 'static',
+                position: { left: '50%', top: '50%' },
+                color: 'green',
+                size: 125,
+                lockX: false,
+                lockY: false
+            })
+            joystickL.on('start end', function (evt, data) {
+
+              if(evt.type==="start")
+              {
+              }
+              else if(evt.type==="end")
+              {
+                scope.forward = 0;
+                scope.turn = 0;
+              }
+
+          }).on('move', function (evt, data) {
+
+            scope.forward = data.vector.y;
+            scope.turn = -data.vector.x;
+
+          }).on('dir:up plain:up dir:left plain:left dir:down ' +
+              'plain:down dir:right plain:right',
+              function (evt, data) {
+
+              }
+          ).on('pressure', function (evt, data) {
+
+          });
+          this.forward = 0;
+          this.turn = 0;
+      },
+
+      tick: function (time, timeDelta) {
+        let force = maxForce * this.forward;
+        let steer = maxSteerVal * this.turn;
+
+        force *= timeDelta * .1
+        steer *= timeDelta * .1
+
+        if (this.forward!=0){
+          this.el.object3D.translateZ(force);
+          this.el.object3D.rotateY(steer);
+          this.el.setAttribute('animation-mixer', {
+            clip: "Take 001",
+            loop: 'repeat',
+            crossFadeDuration: 0.4,
+          })
+           //if(clip2) clip2.play();
+          // if(clip1) clip1.stop();
+        }else{
+          this.el.setAttribute('animation-mixer', {
+            clip: "idle",
+            crossFadeDuration: 0.4,
+          })
+        } 
+      }
+    })
+
+    </script>
+  </head>
+  <body>
+   
+    <a-scene physics>
+      <a-assets>
+        <img id="ground" src="images/block.png">
+        <img id="bg" src="images/bg.jpg">
+        <a-asset-item id="frog" src="models/frog.glb"></a-asset-item>    
+      </a-assets>
+      
+      <a-camera position="0 4 5">          
+      </a-camera>
+      
+
+      <a-entity height="100" width="100" shadow="cast:true; receive:true">
+        <a-box 
+          position="-1 0.5 -2" 
+          rotation="0 45 0" 
+          color="#4CC3D9" 
+          dynamic-body 
+          grabbable>
+        </a-box>
+        
+        <a-entity 
+          id="frog-model"
+          position="0 0.01 -10"
+          rotation="0 0 0"
+          scale=".2 .2 .2"
+          car
+          animation-mixer="clip: idle; loop: repeat; crossFadeDuration: 0.4"
+          gltf-model="#frog"
+          dynamic-body>
+        </a-entity>
+
+        <a-plane 
+          src="#ground" 
+          height="100" 
+          width="100" 
+          rotation="-90 0 0"
+          repeat="100 100" 
+          static-body>
+        </a-plane>
+
+      </a-entity>
+
+      <a-sky src="#bg"></a-sky>
+    </a-scene>
+    <div>
+      <div id="joystick"></div>
+    </div>
+  </body>
+</html>
