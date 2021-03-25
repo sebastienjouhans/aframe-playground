@@ -30,8 +30,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.9.0/nipplejs.min.js"></script>
     <script>
 
-    const maxSteerVal = 0.02;
-    const maxForce = .05;
       
     AFRAME.registerComponent('car', {
       
@@ -77,6 +75,8 @@
       },
 
       tick: function (time, timeDelta) {
+        const maxSteerVal = 0.02;
+        const maxForce = .05;
         let force = maxForce * this.forward;
         let steer = maxSteerVal * this.turn;
 

@@ -11,7 +11,7 @@
           margin: 0;
       } */
 
-      #left {
+      #joystick {
           position: absolute;
           left: 0;
           top: 0;
@@ -37,7 +37,7 @@
         var scope = this;
 
         var joystickL = nipplejs.create({
-                zone: document.getElementById('left'),
+                zone: document.getElementById('joystick'),
                 mode: 'static',
                 position: { left: '50%', top: '50%' },
                 color: 'green',
@@ -46,11 +46,7 @@
                 lockY: false
             })
             joystickL.on('start end', function (evt, data) {
-
-              if(evt.type==="start")
-              {
-              }
-              else if(evt.type==="end")
+             if(evt.type==="end")
               {
                 scope.forward = 0;
                 scope.turn = 0;
@@ -77,9 +73,11 @@
       },
 
       tick: function (time, timeDelta) {
-        const maxSteerVal = 0.02;
-        const maxForce = .1;
+        const maxSteerVal = 0.01;
+        const maxForce = .05;
         const brakeForce = 10;
+
+        console.log(this.forward)
 
         var force = maxForce * this.forward;
         var steer = maxSteerVal * this.turn;
@@ -88,7 +86,7 @@
         steer *= timeDelta * .1
 
         if (this.forward!=0){
-          this.el.object3D.translateZ(force);//move cube
+          this.el.object3D.translateX(force);//move cube
           this.el.object3D.rotateY(steer);
           // if(clip2) clip2.play();
           // if(clip1) clip1.stop();
@@ -107,8 +105,7 @@
       <a-assets>
         <img id="ground" src="images/block.png">
         <img id="bg" src="images/bg.jpg">
-        <a-asset-item id="car-obj" src="models/car.obj"></a-asset-item>
-        <a-asset-item id="car-mtl" src="models/car.mtl"></a-asset-item>        
+        <a-asset-item id="car-model" src="models/car.glb"></a-asset-item>     
       </a-assets>
       
       <a-entity>
@@ -119,14 +116,15 @@
       <a-entity height="100" width="100" shadow="cast:true; receive:true">
         <a-box position="-1 0.5 -15" rotation="0 45 0" color="#4CC3D9" dynamic-body></a-box>
 
-        <a-obj-model
-          src="#car-obj"
-          mtl="#car-mtl"
-          position="0 0.01 -10"
-          rotation="0 -180 0"
-          car
-          animation-mixer>
-        </a-obj-model>
+      <a-entity 
+        id="car-entity"
+        position="0 0.01 -10"
+        rotation="0 90 0"
+        scale=".2 .2 .2"
+        car
+        animation-mixer="clip: idle; loop: repeat; crossFadeDuration: 0.4"
+        gltf-model="#car-model">
+      </a-entity>
 
         <a-plane src="#ground" height="100" width="100" rotation="-90 0 0" repeat="100 100" static-body></a-plane>
       </a-entity>
@@ -134,7 +132,7 @@
       <a-sky src="#bg"></a-sky>
     </a-scene>
     <div>
-      <div id="left"></div>
+      <div id="joystick"></div>
     </div>
   </body>
 </html>
