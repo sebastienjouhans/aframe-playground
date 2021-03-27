@@ -112,15 +112,15 @@
       <a-entity
         light="
           type: directional;
-          intensity: 0.8;
+          intensity: 0.5;
           castShadow: true;
-          shadowMapHeight:2048;
-          shadowMapWidth:2048;
+          shadowMapHeight:512;
+          shadowMapWidth:512;
           shadowCameraTop: 10;
           shadowCameraVisible: true;
           target: #car-entity;"
-        position="1 4.3 2.5"
-        xrextras-attach="target: car-entity; offset: 5 15 5;"
+        position="1 8 -5"
+        xrextras-attach="target: car-entity; offset: 0 15 0;"
         shadow>
       </a-entity>
 
@@ -129,7 +129,7 @@
 
         <a-box  
           scale="2 2 2" 
-          position="-1 1 -15" 
+          position="-1 1 -10" 
           rotation="0 45 0" 
           color="#4CC3D9" 
           static-body
