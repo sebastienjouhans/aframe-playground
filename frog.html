@@ -83,14 +83,17 @@
         force *= timeDelta * .1
         steer *= timeDelta * .1
 
-        if (this.forward!=0){
+        if (this.forward!==0){
           this.el.object3D.translateZ(force);
-          this.el.object3D.rotateY(steer);
-          this.el.setAttribute('animation-mixer', {
-            clip: "Take 001",
-            loop: 'repeat',
-            crossFadeDuration: 0.4,
-          })
+          if(force!==0)
+          {
+            this.el.object3D.rotateY(steer);
+            this.el.setAttribute('animation-mixer', {
+              clip: "Take 001",
+              loop: 'repeat',
+              crossFadeDuration: 0.4,
+            })
+          }
            //if(clip2) clip2.play();
           // if(clip1) clip1.stop();
         }else{
