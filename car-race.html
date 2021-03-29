@@ -90,6 +90,25 @@
       }
     })
 
+
+
+    AFRAME.registerComponent('collision', {
+
+      init () {
+          const scope = this;
+
+          let didCollide = false;
+
+          this.el.addEventListener('collide', (e) => {
+            if (didCollide || e.detail.body.el.id !== 'car-entity') {
+              return
+            }
+            didCollide = true;
+            scope.el.parentElement.removeChild(scope.el);
+          })
+        },
+      })
+
     </script>
   </head>
   <body>
@@ -101,6 +120,7 @@
       <a-assets>
         <img id="ground" src="images/block.png">
         <img id="bg" src="images/bg.jpg">
+        <a-asset-item id="star" src="models/star.glb"></a-asset-item>     
         <a-asset-item id="car-model" src="models/car.glb"></a-asset-item>     
       </a-assets>
       
@@ -127,14 +147,39 @@
 
       <a-entity>
 
-        <a-box  
-          scale="2 2 2" 
-          position="-1 1 -10" 
-          rotation="0 45 0" 
-          color="#4CC3D9" 
-          static-body
-          >
-        </a-box>
+  
+        <a-entity 
+          id="star1-model"
+          position="0 0 -10"
+          rotation="0 0 0"
+          scale="0.04 0.04 0.04"
+          gltf-model="#star"
+          kinematic-body
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
+          collision>
+        </a-entity>
+    
+        <a-entity 
+          id="star2-model"
+          position="3 0 -13"
+          rotation="0 0 0"
+          scale="0.04 0.04 0.04"
+          gltf-model="#star"
+          kinematic-body
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
+          collision>
+        </a-entity>
+        
+        <a-entity 
+          id="star3-model"
+          position="-3 0 -13"
+          rotation="0 0 0"
+          scale="0.04 0.04 0.04"
+          gltf-model="#star"
+          kinematic-body
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
+          collision>
+        </a-entity>
 
         <a-entity 
           id="car-entity"
